@@ -748,7 +748,12 @@ Certs: eCIR, CompTIA Sec+ (via Netriders Academy)`,
             const message = messageHandler.value;
 
             const mailtoLink = `mailto:omar0boumezough@gmail.com?subject=Cybersecurity Inquiry from ${encodeURIComponent(name)}&body=Sender: ${encodeURIComponent(email)}%0A%0AMessage:%0A${encodeURIComponent(message)}`;
-            window.location.href = mailtoLink;
+            const mailtoLinkLink = document.createElement('a');
+            mailtoLinkLink.href = mailtoLink;
+            mailtoLinkLink.target = '_blank';
+            document.body.appendChild(mailtoLinkLink);
+            mailtoLinkLink.click();
+            document.body.removeChild(mailtoLinkLink);
 
             // Log interactive dispatch message inside the simulated terminal
             const statusLine = document.createElement('div');
