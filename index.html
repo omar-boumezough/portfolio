@@ -1,772 +1,651 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omar Boumezough | Blue Team, SOC & DFIR Portfolio</title>
-    <!-- Tailwind Engine CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Modern Tech Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide-react@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Digital Blue/Cyan Cyber aesthetics custom styles */
-        body {
-            background-color: #030712;
-            color: #f1f5f9;
-        }
-        .cyber-grid {
-            background-size: 40px 40px;
-            background-image: 
-                linear-gradient(to right, rgba(6, 182, 212, 0.04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
-        }
-        .terminal-card {
-            background: rgba(10, 15, 30, 0.85);
-            border: 1px solid #1e293b;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .terminal-card:hover {
-            border-color: #06b6d4;
-            box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
-        }
-        .glow-text {
-            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-        }
-        .scanlines {
-            position: relative;
-            overflow: hidden;
-        }
-        .scanlines::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-            z-index: 2;
-            background-size: 100% 3px;
-            pointer-events: none;
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #030712;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #06b6d4;
-        }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Omar Boumezough — Blue Team Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #020c18;
+      --panel: rgba(4,28,54,0.88);
+      --panel2: rgba(6,38,70,0.65);
+      --blue-mid: #0d4f8a;
+      --blue-bright: #1a91f0;
+      --cyan: #00e5ff;
+      --cyan2: #00bfff;
+      --green: #00ffb2;
+      --text: #c8e6ff;
+      --text-dim: #5a8ab0;
+      --text-bright: #e8f4ff;
+      --grid-color: rgba(26,145,240,0.07);
+      --border: rgba(0,229,255,0.14);
+      --border-bright: rgba(0,229,255,0.42);
+      --glow: 0 0 22px rgba(0,229,255,0.28), 0 0 60px rgba(26,145,240,0.12);
+      --glow-sm: 0 0 10px rgba(0,229,255,0.22);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;cursor:none}
+
+    /* cursor */
+    #cursor{position:fixed;width:18px;height:18px;border:2px solid var(--cyan);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .12s ease;box-shadow:0 0 10px var(--cyan);transform:translate(-50%,-50%)}
+    #cursor-dot{position:fixed;width:4px;height:4px;background:var(--cyan);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+
+    /* bg */
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid-color) 1px,transparent 1px),linear-gradient(90deg,var(--grid-color) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+    body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:1}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+    /* nav */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.9rem 2.5rem;background:rgba(2,12,24,.93);border-bottom:1px solid var(--border);backdrop-filter:blur(14px)}
+    .nav-logo{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--cyan);letter-spacing:.18em;text-shadow:var(--glow-sm)}
+    .nav-logo span{color:var(--blue-bright)}
+    .nav-links{display:flex;gap:1.8rem;list-style:none}
+    .nav-links a{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:var(--text-dim);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--cyan);transition:width .3s ease;box-shadow:var(--glow-sm)}
+    .nav-links a:hover{color:var(--cyan)}
+    .nav-links a:hover::after{width:100%}
+
+    section{position:relative;z-index:2}
+
+    /* ── HERO ── */
+    #hero{min-height:100vh;display:flex;align-items:center;padding:0 10vw;position:relative;overflow:hidden}
+    .hero-left{max-width:600px}
+    .hero-tag{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--cyan);letter-spacing:.28em;text-transform:uppercase;margin-bottom:1.2rem;opacity:0;animation:fadeUp .6s .2s forwards;display:flex;align-items:center;gap:.8rem}
+    .hero-tag::before{content:'';display:inline-block;width:32px;height:1px;background:var(--cyan);box-shadow:var(--glow-sm)}
+    h1.hero-name{font-family:'Orbitron',monospace;font-size:clamp(2.2rem,5.5vw,4rem);font-weight:900;line-height:1.05;color:var(--text-bright);margin-bottom:.35rem;opacity:0;animation:fadeUp .6s .35s forwards;letter-spacing:-.02em}
+    h1.hero-name .glow-word{color:var(--cyan);text-shadow:0 0 30px rgba(0,229,255,.55),0 0 80px rgba(0,229,255,.18)}
+    .hero-role{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--blue-bright);letter-spacing:.08em;margin-bottom:1.6rem;opacity:0;animation:fadeUp .6s .5s forwards}
+    .hero-role .cursor-blink{display:inline-block;width:2px;height:1em;background:var(--cyan);vertical-align:middle;animation:blink 1s infinite;margin-left:3px}
+    .hero-desc{font-size:1.05rem;color:var(--text-dim);line-height:1.75;max-width:500px;margin-bottom:2.2rem;opacity:0;animation:fadeUp .6s .65s forwards}
+    .hero-badges{display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:2.2rem;opacity:0;animation:fadeUp .6s .75s forwards}
+    .badge{font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:.3rem .85rem;border:1px solid var(--border);background:rgba(26,145,240,.08);color:var(--cyan2);letter-spacing:.12em;border-radius:2px;text-transform:uppercase}
+    .hero-cta{display:flex;gap:1rem;opacity:0;animation:fadeUp .6s .85s forwards}
+    .btn-primary{font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.75rem 1.8rem;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;text-decoration:none;display:inline-block}
+    .btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);transform:translateX(-100%);transition:transform .4s}
+    .btn-primary:hover{box-shadow:0 0 30px rgba(0,229,255,.5);transform:translateY(-2px)}
+    .btn-primary:hover::before{transform:translateX(100%)}
+    .btn-outline{font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.75rem 1.8rem;background:transparent;color:var(--cyan);border:1px solid var(--border-bright);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;text-decoration:none;display:inline-block}
+    .btn-outline:hover{background:rgba(0,229,255,.08);box-shadow:var(--glow-sm);transform:translateY(-2px)}
+
+    /* terminal */
+    .hero-terminal{position:absolute;right:7vw;top:50%;transform:translateY(-50%);width:390px;background:var(--panel);border:1px solid var(--border);box-shadow:var(--glow);opacity:0;animation:fadeLeft .8s 1s forwards}
+    .terminal-header{display:flex;align-items:center;gap:.5rem;padding:.65rem 1rem;background:rgba(6,38,70,.6);border-bottom:1px solid var(--border)}
+    .t-dot{width:10px;height:10px;border-radius:50%}
+    .t-dot.red{background:#ff4f4f}.t-dot.yellow{background:#ffd84f}.t-dot.green{background:#4fffb0}
+    .terminal-title{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--text-dim);margin-left:auto;letter-spacing:.1em}
+    .terminal-body{padding:1.1rem 1.3rem;font-family:'Share Tech Mono',monospace;font-size:.76rem;line-height:1.95;min-height:290px}
+    .t-line{opacity:0;transition:opacity .2s}.t-line.visible{opacity:1}
+    .t-prompt{color:var(--cyan)}.t-cmd{color:var(--text-bright)}.t-out{color:var(--text-dim)}.t-val{color:#4fffb0}.t-key{color:var(--blue-bright)}.t-warn{color:#ffd84f}
+
+    /* scroll */
+    .scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fadeUp .6s 1.5s forwards}
+    .scroll-text{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--text-dim);letter-spacing:.22em;text-transform:uppercase}
+    .scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--cyan),transparent);animation:scrollPulse 2s infinite}
+
+    /* section layout */
+    .section-wrap{max-width:1180px;margin:0 auto;padding:7rem 2.5rem 5rem}
+    .section-label{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--cyan);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.45rem;display:flex;align-items:center;gap:.8rem}
+    .section-label::before{content:'';display:inline-block;width:22px;height:1px;background:var(--cyan)}
+    h2.section-title{font-family:'Orbitron',monospace;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;color:var(--text-bright);margin-bottom:2.8rem;letter-spacing:-.01em}
+    h2.section-title span{color:var(--cyan)}
+    .section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-bright),transparent);margin:0 2.5rem;position:relative;z-index:2}
+
+    /* about */
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+    .about-text p{font-size:1.05rem;color:var(--text-dim);line-height:1.82;margin-bottom:1.1rem}
+    .about-text p strong{color:var(--text-bright)}
+    .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+    .stat-card{padding:1.35rem;background:var(--panel);border:1px solid var(--border);position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--cyan),transparent)}
+    .stat-card:hover{border-color:var(--border-bright);transform:translateY(-3px);box-shadow:var(--glow-sm)}
+    .stat-num{font-family:'Orbitron',monospace;font-size:1.9rem;font-weight:900;color:var(--cyan);line-height:1;margin-bottom:.25rem;text-shadow:var(--glow-sm)}
+    .stat-label{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase}
+
+    /* skills matrix */
+    .skills-matrix{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2rem}
+    .skill-category{background:var(--panel);border:1px solid var(--border);padding:1.6rem;transition:border-color .3s}
+    .skill-category:hover{border-color:var(--border-bright)}
+    .skill-cat-title{font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;color:var(--cyan);letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.4rem;padding-bottom:.7rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem}
+    .skill-cat-title .cat-icon{font-size:1rem}
+    .skill-item{margin-bottom:1rem}
+    .skill-item:last-child{margin-bottom:0}
+    .skill-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+    .skill-name{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;color:var(--text-bright);letter-spacing:.04em}
+    .skill-pct{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--cyan)}
+    .skill-bar{height:3px;background:rgba(26,145,240,.14);position:relative;overflow:hidden}
+    .skill-fill{height:100%;background:linear-gradient(90deg,var(--blue-mid),var(--cyan));width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px var(--cyan)}
+    .skill-tags{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.5rem}
+    .skill-tag{font-family:'Share Tech Mono',monospace;font-size:.63rem;padding:.2rem .65rem;border:1px solid rgba(0,229,255,.18);color:var(--text-dim);letter-spacing:.08em}
+
+    /* certs */
+    .certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem}
+    .cert-card{padding:1.6rem;background:var(--panel);border:1px solid var(--border);position:relative;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s}
+    .cert-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .3s}
+    .cert-card:hover{border-color:var(--border-bright);transform:translateY(-4px);box-shadow:var(--glow)}
+    .cert-card:hover::before{opacity:1}
+    .cert-issuer{font-family:'Share Tech Mono',monospace;font-size:.66rem;color:var(--blue-bright);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.55rem}
+    .cert-name{font-family:'Orbitron',monospace;font-size:.92rem;font-weight:700;color:var(--text-bright);margin-bottom:.45rem;line-height:1.3}
+    .cert-date{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--text-dim);margin-bottom:.8rem}
+    .cert-id{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:rgba(0,229,255,.45);word-break:break-all;margin-bottom:1.1rem}
+    .cert-skills{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.1rem}
+    .cert-skill-tag{font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:.15rem .55rem;border:1px solid rgba(0,255,178,.22);color:var(--green);letter-spacing:.06em}
+    .cert-link{display:inline-flex;align-items:center;gap:.5rem;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--cyan);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:gap .2s}
+    .cert-link:hover{gap:.85rem}
+    .cert-link svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+    .cert-icon-bg{position:absolute;top:1rem;right:1rem;opacity:.07;font-size:2.8rem}
+
+    /* projects */
+    .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem}
+    .project-card{background:var(--panel);border:1px solid var(--border);padding:1.6rem;position:relative;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s;cursor:default}
+    .project-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--cyan),transparent);transform:scaleY(0);transition:transform .35s;transform-origin:top}
+    .project-card:hover{border-color:var(--border-bright);transform:translateY(-4px);box-shadow:var(--glow)}
+    .project-card:hover::after{transform:scaleY(1)}
+    .project-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.8rem}
+    .project-filename{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--cyan);letter-spacing:.1em}
+    .project-status{font-family:'Share Tech Mono',monospace;font-size:.62rem;padding:.18rem .6rem;border:1px solid rgba(0,255,178,.3);color:var(--green);letter-spacing:.08em}
+    .project-title{font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;color:var(--text-bright);margin-bottom:.6rem;line-height:1.3}
+    .project-desc{font-size:.95rem;color:var(--text-dim);line-height:1.72;margin-bottom:1.1rem}
+    .project-tools{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.1rem}
+    .project-tool{font-family:'Share Tech Mono',monospace;font-size:.63rem;padding:.18rem .6rem;border:1px solid var(--border);color:var(--text-dim);letter-spacing:.07em}
+    .project-link{display:inline-flex;align-items:center;gap:.45rem;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--blue-bright);text-decoration:none;letter-spacing:.09em;text-transform:uppercase;transition:color .2s,gap .2s}
+    .project-link:hover{color:var(--cyan);gap:.7rem}
+    .project-link svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
+
+    /* education */
+    .edu-card{padding:2rem 2rem 2rem 2.4rem;background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--cyan);position:relative;max-width:680px;box-shadow:var(--glow-sm)}
+    .edu-degree{font-family:'Orbitron',monospace;font-size:.95rem;font-weight:700;color:var(--text-bright);margin-bottom:.35rem}
+    .edu-school{font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:600;color:var(--blue-bright);margin-bottom:.35rem}
+    .edu-period{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--text-dim);letter-spacing:.1em;margin-bottom:.8rem}
+    .edu-grade{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--cyan);border:1px solid var(--border);padding:.22rem .75rem;letter-spacing:.1em}
+
+    /* contact */
+    .contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+    .contact-info p{font-size:1rem;color:var(--text-dim);line-height:1.8;margin-bottom:2rem}
+    .contact-links{display:flex;flex-direction:column;gap:.9rem}
+    .contact-link{display:flex;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:var(--panel);border:1px solid var(--border);text-decoration:none;transition:border-color .3s,transform .3s}
+    .contact-link:hover{border-color:var(--border-bright);transform:translateX(6px)}
+    .contact-link-icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(0,229,255,.08);border:1px solid var(--border);flex-shrink:0}
+    .contact-link-icon svg{width:15px;height:15px;fill:var(--cyan)}
+    .contact-link-text{display:flex;flex-direction:column;gap:.08rem}
+    .contact-link-label{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--text-dim);letter-spacing:.15em;text-transform:uppercase}
+    .contact-link-val{font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:600;color:var(--text-bright)}
+    .contact-form{display:flex;flex-direction:column;gap:.9rem}
+    .form-group{display:flex;flex-direction:column;gap:.38rem}
+    .form-label{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-dim);letter-spacing:.15em;text-transform:uppercase}
+    .form-input,.form-textarea{background:var(--panel);border:1px solid var(--border);color:var(--text-bright);font-family:'Rajdhani',sans-serif;font-size:.95rem;padding:.7rem .95rem;outline:none;transition:border-color .2s,box-shadow .2s;resize:none}
+    .form-input:focus,.form-textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 1px rgba(0,229,255,.18)}
+    .form-textarea{min-height:110px}
+
+    footer{position:relative;z-index:2;text-align:center;padding:1.8rem;border-top:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--text-dim);letter-spacing:.1em}
+    footer span{color:var(--cyan)}
+
+    #notification{position:fixed;bottom:2rem;right:2rem;padding:.9rem 1.4rem;background:var(--panel);border:1px solid var(--cyan);box-shadow:var(--glow);font-family:'Share Tech Mono',monospace;font-size:.76rem;color:var(--cyan);z-index:999;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);letter-spacing:.05em}
+    #notification.show{transform:translateY(0);opacity:1}
+
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeLeft{from{opacity:0;transform:translate(30px,-50%)}to{opacity:1;transform:translate(0,-50%)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+    @keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+    @media(max-width:900px){
+      nav{padding:.9rem 1.2rem}.nav-links{gap:1rem}
+      #hero{padding:0 5vw}.hero-terminal{display:none}
+      .about-grid,.contact-inner,.skills-matrix{grid-template-columns:1fr;gap:2rem}
+      .section-wrap{padding:5rem 1.4rem 3rem}
+    }
+  </style>
 </head>
-<body class="cyber-grid font-sans selection:bg-cyan-900 selection:text-cyan-200">
+<body>
 
-    <!-- TOP HEADER -->
-    <header class="sticky top-0 z-50 border-b border-slate-900 bg-slate-950/80 backdrop-blur-md px-4 py-3">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            <a href="#" class="flex items-center gap-2 text-cyan-400 font-mono font-bold tracking-wider text-sm select-none">
-                <i data-lucide="shield" class="w-4 h-4"></i>
-                OMAR_B_SEC_HUB_//
-            </a>
-            <nav class="flex items-center gap-6 text-xs font-mono text-slate-400">
-                <a href="#about" class="hover:text-cyan-400 transition-colors">ABOUT</a>
-                <a href="#training" class="hover:text-cyan-400 transition-colors">TRAINING</a>
-                <a href="#skills" class="hover:text-cyan-400 transition-colors">SKILLS</a>
-                <a href="#projects" class="hover:text-cyan-400 transition-colors">PROJECTS</a>
-                <a href="#contact" class="hover:text-cyan-400 transition-colors">CONTACT</a>
-            </nav>
-            <div class="hidden md:flex items-center gap-3 text-[11px] font-mono text-slate-500">
-                <span class="flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    SECURE CONTEXT
-                </span>
-                <span>/</span>
-                <span>GITHUB PAGES COMPATIBLE</span>
-            </div>
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">OB<span>_</span>DFIR</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certifications">Certs</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Blue Team · DFIR · SOC Operations</div>
+    <h1 class="hero-name">OMAR<br><span class="glow-word">BOUMEZOUGH</span></h1>
+    <p class="hero-role"><span id="typed-role"></span><span class="cursor-blink"></span></p>
+    <p class="hero-desc">
+      Aspiring Incident Responder based in <strong style="color:var(--text-bright)">Dakhla, Morocco</strong>. Oriented toward SOC alert analysis, digital forensics telemetry, and defensive cybersecurity playbooks. Bridging low-level code and blue team operations.
+    </p>
+    <div class="hero-badges">
+      <span class="badge">Blue Team</span>
+      <span class="badge">DFIR</span>
+      <span class="badge">SOC Analyst</span>
+      <span class="badge">Linux</span>
+      <span class="badge">Sec+ SY0-601</span>
+      <span class="badge">Wireshark</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a href="#contact" class="btn-outline">Contact Me</a>
+    </div>
+  </div>
+
+  <div class="hero-terminal">
+    <div class="terminal-header">
+      <div class="t-dot red"></div><div class="t-dot yellow"></div><div class="t-dot green"></div>
+      <div class="terminal-title">omar@dfir-terminal:~</div>
+    </div>
+    <div class="terminal-body" id="terminal-body"></div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="section-label">Identity</div>
+    <h2 class="section-title">About <span>Me</span></h2>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I'm <strong>Omar Boumezough</strong>, an 18-year-old developer and threat responder based in <strong>Dakhla, Morocco</strong>, currently studying <strong>BTS DAI</strong> (Développement d'Applications Informatiques) at <strong>Lycée Lalla Khadija</strong>.</p>
+        <p>My profound passion is within <strong>defensive engineering</strong>, threat assessment, memory investigations, and incident mapping. I bridge low-level script development and incident analysis — building automated forensic log parsers, structured network protocol monitors, and signature pattern detectors.</p>
+        <p>I aim to operate as an agile, highly alert responder: triaging anomalies, decoding packets in Wireshark, analyzing endpoint processes, and applying <strong>SANS/NIST playbooks</strong> under pressure.</p>
+      </div>
+      <div class="about-stats reveal">
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Certifications</div>
         </div>
-    </header>
-
-    <!-- HERO / IDENTITY BLOCK -->
-    <section class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-7 space-y-6">
-            <div class="inline-flex items-center gap-2 bg-slate-900/60 border border-slate-800 px-3 py-1 rounded-full text-xs font-mono text-cyan-400">
-                <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
-                BLUE TEAM OPERATIONS / IR WORKSPACE
-            </div>
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold font-mono tracking-tight text-white leading-tight">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 glow-text">Omar Boumezough</span>
-            </h1>
-            <p class="text-md md:text-lg font-mono text-slate-300 border-l border-cyan-800 pl-4 py-1">
-                Aspiring Incident Responder | Blue Team & DFIR Learner | BTS DAI Student
-            </p>
-            <p class="text-slate-400 text-sm md:text-base leading-relaxed max-w-xl">
-                I am an 18-year-old developer and threat responder based in Morocco. Expertly oriented toward Security Operation Center alert analysis, digital logging forensic telemetry, and defensive cybersecurity playbooks.
-            </p>
-            <div class="flex flex-wrap gap-4 pt-2">
-                <a href="#projects" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-5 py-2.5 rounded text-xs tracking-wider transition-colors inline-flex items-center gap-1.5 border border-cyan-400">
-                    <i data-lucide="terminal" class="w-4 h-4"></i>
-                    VIEW PROJECTS
-                </a>
-                <a href="#contact" class="hover:bg-slate-900 border border-slate-800 text-slate-200 hover:text-white font-semibold px-5 py-2.5 rounded text-xs tracking-wider transition-colors inline-flex items-center gap-1.5">
-                    <i data-lucide="mail" class="w-4 h-4"></i>
-                    CONTACT ME
-                </a>
-                <a href="https://github.com/omar-boumezough" target="_blank" class="hover:bg-slate-900 border border-slate-800 text-slate-350 hover:text-white font-semibold px-5 py-2.5 rounded text-xs tracking-wider transition-colors inline-flex items-center gap-1.5">
-                    <i data-lucide="github" class="w-4 h-4"></i>
-                    GITHUB
-                </a>
-            </div>
+        <div class="stat-card">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Lab Projects</div>
         </div>
-
-        <!-- CLI Terminal Interactive block inside the Static File -->
-        <div class="lg:col-span-5">
-            <div class="terminal-card rounded-lg overflow-hidden border border-slate-800 bg-slate-950/95 font-mono text-xs shadow-2xl">
-                <div class="flex items-center justify-between px-3 py-2 bg-slate-900 border-b border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <i data-lucide="terminal" class="w-3.5 h-3.5 text-cyan-400"></i>
-                        <span class="text-[10px] text-slate-400 tracking-wider">omar@dfir-terminal:~</span>
-                    </div>
-                    <div class="flex space-x-1">
-                        <span class="w-2 h-2 rounded-full bg-red-500/80 inline-block"></span>
-                        <span class="w-2 h-2 rounded-full bg-yellow-500/80 inline-block"></span>
-                        <span class="w-2 h-2 rounded-full bg-green-500/80 inline-block"></span>
-                    </div>
-                </div>
-                <div id="static-terminal-history" class="p-3 space-y-3 h-64 overflow-y-auto index-lines text-[11px] leading-relaxed scanlines select-text">
-                    <div class="text-cyan-400 font-semibold">=== MOROCCAN SOC FORENSIC LAB - CORE v1.0 ===</div>
-                    <p class="text-slate-400">Terminal loaded. Security analyst initialized.</p>
-                    <p class="text-slate-400">Type <span class="text-yellow-400 font-bold">help</span> to view active profile directives.</p>
-                </div>
-                <div class="flex items-center bg-slate-950 border-t border-slate-900 px-3 py-1.5">
-                    <span class="text-green-400 mr-1.5">omar@dfir:~$</span>
-                    <input id="static-terminal-input" type="text" class="flex-1 bg-transparent text-slate-200 outline-none border-none py-0.5 text-[11px] focus:ring-0" placeholder="Type here..." autocomplete="off">
-                </div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-num">18</div>
+          <div class="stat-label">Years Old</div>
         </div>
-    </section>
-
-    <!-- SECTION: ABOUT ME (with profile terminal profile info) -->
-    <section id="about" class="border-t border-slate-900 bg-slate-950/20 py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-bold font-mono text-cyan-400 mb-8 flex items-center gap-2">
-                <i data-lucide="user" class="w-5 h-5"></i>
-                IDENT_WHOIS // ABOUT ME
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-                <div class="md:col-span-7 space-y-4">
-                    <p class="text-slate-200 text-sm md:text-base leading-relaxed">
-                         I am an 18-year-old student based in <span class="text-cyan-400 font-semibold">Dakhla, Morocco</span>. Currently studying <span class="text-cyan-400 font-semibold text-slate-200 border-b border-cyan-900/40">BTS DAI (Développement d'Applications Informatiques)</span> at <span class="text-slate-200 font-semibold">Lycée Lalla Khadija</span>.
-                    </p>
-                    <p class="text-slate-400 text-sm md:text-base leading-relaxed">
-                        My profound passion is within defensive engineering, threat assessment, memory investigations, and incident mapping. By developing application code under the BTS DAI curriculum, I bridge the gap between low-level script development and incident analysis, enabling automated forensic log parsers, structured network protocol monitors, and signature pattern builders.
-                    </p>
-                    <p class="text-slate-400 text-sm md:text-base leading-relaxed">
-                         I aim to contribute directly to operations seeking an agile, highly alert responder who is able to triage anomalies, decode network packets in Wireshark, analyze endpoint processes, and apply structural SANS playbooks under extreme conditions.
-                    </p>
-                </div>
-                <!-- Profile terminal panel -->
-                <div class="md:col-span-5 bg-slate-950 border border-slate-800 rounded p-4 font-mono text-[11px] space-y-2 relative">
-                    <div class="absolute top-2 right-3 flex items-center gap-1.5 text-xs text-slate-500">
-                        <i data-lucide="database" class="w-3.5 h-3.5 text-cyan-500"></i>
-                        PROFILE_RECORD
-                    </div>
-                    <p class="text-xs text-cyan-400 border-b border-slate-900 pb-1.5">CAT PROFILE_DATA.JSON</p>
-                    <p><span class="text-slate-500">"researcher":</span> {</p>
-                    <div class="pl-4 space-y-1">
-                        <p><span class="text-slate-500">"name":</span> <span class="text-cyan-400">"Omar Boumezough"</span>,</p>
-                        <p><span class="text-slate-500">"age":</span> <span class="text-yellow-400">18</span>,</p>
-                        <p><span class="text-slate-500">"city":</span> <span class="text-cyan-400">"Dakhla"</span>,</p>
-                        <p><span class="text-slate-500">"country":</span> <span class="text-cyan-400">"Morocco"</span>,</p>
-                        <p><span class="text-slate-500">"education":</span> {</p>
-                        <div class="pl-4">
-                            <p><span class="text-slate-500">"institution":</span> <span class="text-slate-350">"Lycée Lalla Khadija"</span>,</p>
-                            <p><span class="text-slate-500">"program":</span> <span class="text-slate-350">"BTS DAI"</span></p>
-                        </div>
-                        <p>},</p>
-                        <p><span class="text-slate-500">"focus":</span> [</p>
-                        <div class="pl-4 text-green-400">
-                            <p>"Blue Team", "DFIR", "SOC", "Incident Response"</p>
-                        </div>
-                        <p>]</p>
-                    </div>
-                    <p>}</p>
-                </div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-num">BTS</div>
+          <div class="stat-label">DAI — Bac +2</div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- SECTION: TRAINING / CERTIFICATIONS -->
-    <section id="training" class="border-t border-slate-900 bg-slate-950/40 py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-bold font-mono text-cyan-400 mb-8 flex items-center gap-2">
-                <i data-lucide="award" class="w-5 h-5"></i>
-                CREDENTIALS // TRAINING & COURSES
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Cert 1 -->
-                <div class="terminal-card rounded border border-slate-800 bg-slate-950 p-6 space-y-4">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <span class="text-[10px] bg-cyan-950 text-cyan-400 px-2 py-0.5 rounded border border-cyan-800/40 font-mono font-bold uppercase">eLearnSecurity</span>
-                            <h3 class="text-lg font-bold text-white mt-1">eCIR (Certified Incident Responder)</h3>
-                            <p class="text-xs text-slate-500 font-mono">Verified training from Netriders Academy • 2024</p>
-                        </div>
-                        <i data-lucide="shield-check" class="w-8 h-8 text-cyan-400"></i>
-                    </div>
-                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
-                        Comprehensive tactical training focused on the SANS/NIST framework, network forensics, malware process isolation, memory audits, local disk registry parsing, and malicious connection tracing.
-                    </p>
-                    <div class="border-t border-slate-900 pt-3">
-                        <p class="text-[11px] font-mono text-slate-400 uppercase font-semibold mb-1">Skills Mastered:</p>
-                        <ul class="grid grid-cols-2 gap-1 text-[10px] font-mono text-slate-350 list-inside list-disc">
-                            <li>Incident Handling</li>
-                            <li>Tshark/Packet Forensics</li>
-                            <li>Memory Dump Audits</li>
-                            <li>Host Persistence hunt</li>
-                        </ul>
-                    </div>
-                </div>
+<div class="section-divider"></div>
 
-                <!-- Cert 2 -->
-                <div class="terminal-card rounded border border-slate-800 bg-slate-950 p-6 space-y-4">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <span class="text-[10px] bg-cyan-950 text-cyan-400 px-2 py-0.5 rounded border border-cyan-800/40 font-mono font-bold uppercase">CompTIA</span>
-                            <h3 class="text-lg font-bold text-white mt-1">Security+ SY0-601</h3>
-                            <p class="text-xs text-slate-500 font-mono">Verified training from Netriders Academy • 2024</p>
-                        </div>
-                        <i data-lucide="award" class="w-8 h-8 text-cyan-400"></i>
-                    </div>
-                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
-                        Industry base cert showcasing competency in enterprise network threats, secure systems engineering, cryptographic suites, governance guidelines, threat modeling, and incident reporting.
-                    </p>
-                    <div class="border-t border-slate-900 pt-3">
-                        <p class="text-[11px] font-mono text-slate-400 uppercase font-semibold mb-1">Skills Mastered:</p>
-                        <ul class="grid grid-cols-2 gap-1 text-[10px] font-mono text-slate-350 list-inside list-disc">
-                            <li>Threat Assessment</li>
-                            <li>Network Security Architecture</li>
-                            <li>Cryptographic protocols</li>
-                            <li>Governance & Audits</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-wrap">
+    <div class="section-label">Capability Matrix</div>
+    <h2 class="section-title">Skills & <span>Technologies</span></h2>
+    <div class="skills-matrix" id="skills-matrix"></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-wrap">
+    <div class="section-label">Credentials</div>
+    <h2 class="section-title">Licenses & <span>Certifications</span></h2>
+    <div class="certs-grid">
+
+      <div class="cert-card reveal">
+        <span class="cert-icon-bg">🛡</span>
+        <div class="cert-issuer">Cybrary</div>
+        <div class="cert-name">Careers in Cybersecurity</div>
+        <div class="cert-date">Issued May 2026</div>
+        <div class="cert-id">ID: CC-c76698b9-602a-4594-bf7b-12c8c72f4480</div>
+        <div class="cert-skills">
+          <span class="cert-skill-tag">Threat Landscape</span>
+          <span class="cert-skill-tag">SOC Roles</span>
+          <span class="cert-skill-tag">Career Pathways</span>
         </div>
-    </section>
+        <a class="cert-link" href="https://app.cybrary.it/courses/api/certificate/CC-c76698b9-602a-4594-bf7b-12c8c72f4480/view" target="_blank" rel="noopener">
+          View Credential <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
 
-    <!-- SECTION: SKILLS MATRIX -->
-    <section id="skills" class="border-t border-slate-900 py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-bold font-mono text-cyan-400 mb-8 flex items-center gap-2">
-                <i data-lucide="cpu" class="w-5 h-5"></i>
-                MATRIX // SECURITY & TECH CAPABILITIES
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Col 1: BT & SOC -->
-                <div class="border border-slate-800 bg-slate-950/70 p-5 rounded space-y-4">
-                    <h3 class="font-mono text-sm font-bold text-cyan-400 flex items-center gap-1.5 border-b border-slate-900 pb-2">
-                        <i data-lucide="crosshair" class="w-4 h-4 text-cyan-500"></i>
-                        INCIDENT RESPONSE & SOC
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>SOC Alert Triage</span>
-                                <span class="text-cyan-400">85%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[85%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Incident Response</span>
-                                <span class="text-cyan-400">80%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[80%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Digital Forensics</span>
-                                <span class="text-cyan-400">75%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[75%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Windows Event Logs</span>
-                                <span class="text-cyan-400">85%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[85%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Sysmon Basics & Wireshark</span>
-                                <span class="text-cyan-400">85%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[85%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <ul class="text-[10px] font-mono text-slate-500 space-y-1 pt-1.5 list-inside list-disc">
-                            <li>MITRE ATT&CK Map, Sigma / YARA signatures</li>
-                            <li>Network Packet Header auditing</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Col 2: Systems & Code -->
-                <div class="border border-slate-800 bg-slate-950/70 p-5 rounded space-y-4">
-                    <h3 class="font-mono text-sm font-bold text-cyan-400 flex items-center gap-1.5 border-b border-slate-900 pb-2">
-                        <i data-lucide="code" class="w-4 h-4 text-cyan-400"></i>
-                        SYSTEMS & CODE (BTS DAI)
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Linux CLI & Bash</span>
-                                <span class="text-cyan-400">80%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[80%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Python scripting</span>
-                                <span class="text-cyan-400">75%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[75%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>C Programming Basics</span>
-                                <span class="text-cyan-400">70%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[70%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>HTML, CSS, JavaScript JS</span>
-                                <span class="text-cyan-400">85%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[85%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>SQL & Databases</span>
-                                <span class="text-cyan-400">75%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[75%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <ul class="text-[10px] font-mono text-slate-500 space-y-1 pt-1.5 list-inside list-disc">
-                            <li>JSON logging parsers & query building</li>
-                            <li>Tonnage memory auditing under C codes</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Col 3: Network & Infrastructure -->
-                <div class="border border-slate-800 bg-slate-950/70 p-5 rounded space-y-4">
-                    <h3 class="font-mono text-sm font-bold text-cyan-400 flex items-center gap-1.5 border-b border-slate-900 pb-2">
-                        <i data-lucide="server" class="w-4 h-4 text-cyan-400"></i>
-                        INFRASTRUCTURE & CORE
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Networking Essentials</span>
-                                <span class="text-cyan-400">85%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[85%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>TCP/IP, DNS, HTTP, TLS</span>
-                                <span class="text-cyan-400">85%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[85%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Computer Architecture</span>
-                                <span class="text-cyan-400">75%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[75%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-[11px] text-slate-300 font-mono">
-                                <span>Virtualization / VMs</span>
-                                <span class="text-cyan-400">85%</span>
-                            </div>
-                            <div class="w-full h-1 bg-slate-900 rounded mt-1 overflow-hidden">
-                                <div class="w-[85%] h-full bg-cyan-400 rounded"></div>
-                            </div>
-                        </div>
-                        <ul class="text-[10px] font-mono text-slate-500 space-y-1 pt-12.5 list-inside list-disc">
-                            <li>pfSense Router deployment & NAT tables</li>
-                            <li>VMware, VirtualBox, and AD infrastructure</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+      <div class="cert-card reveal">
+        <span class="cert-icon-bg">🐧</span>
+        <div class="cert-issuer">TCM Security</div>
+        <div class="cert-name">Linux 100</div>
+        <div class="cert-date">Issued May 2026 · Expires Feb 2027</div>
+        <div class="cert-id">TCM Security — Linux Fundamentals Certification</div>
+        <div class="cert-skills">
+          <span class="cert-skill-tag">Linux CLI</span>
+          <span class="cert-skill-tag">Bash Scripting</span>
+          <span class="cert-skill-tag">File System</span>
+          <span class="cert-skill-tag">Permissions</span>
         </div>
-    </section>
+        <a class="cert-link" href="https://dashboard.educate360.com/certification/eyJpdiI6InBrZ1B1M1k3TDhJdVg2di9CaWFDQ0E9PSIsInZhbHVlIjoiL3U3V3Q5V01NWGRGVld0L0c1OCtIdz09IiwibWFjIjoiNjIyYTNmNGM1NTA2NGNlZTU2OWUwODcxYjhjNzAzNWZmNDc0NDg5ODBhN2NmNjRiMjgzNDdlMzVlNzAwNDY3YiIsInRhZyI6IiJ9" target="_blank" rel="noopener">
+          View Credential <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
 
-    <!-- SECTION: PROJECTS -->
-    <section id="projects" class="border-t border-slate-900 bg-slate-950/20 py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-bold font-mono text-cyan-400 mb-8 flex items-center gap-2">
-                <i data-lucide="folder-git-2" class="w-5 h-5"></i>
-                INCIDENTS // SECURITY INVESTIGATION RECORDS
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Project 1 -->
-                <div class="terminal-card rounded p-6 bg-slate-950 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-red-950 text-red-400 border border-red-900/30 px-2 py-0.5 rounded font-mono font-bold uppercase">Network Forensics</span>
-                            <span class="text-[10px] font-mono text-slate-500">pcap_triage.sh</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-200">Wireshark PCAP Analysis Reports</h3>
-                        <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
-                            Parsing complex packet captures to track and isolate backdoor download files, malicious HTTP POST sequences, DNS exfiltration tunnels, and beaconing timing offsets representing C2 communication channels.
-                        </p>
-                    </div>
-                    <div class="flex justify-between items-center pt-5 border-t border-slate-900 mt-5">
-                        <span class="text-[10px] font-mono text-slate-500">Wireshark, tshark, DNS</span>
-                        <a href="https://github.com/omar-boumezough/wireshark-analysis" target="_blank" class="text-xs font-mono text-cyan-400 inline-flex items-center gap-1 hover:underline">
-                            RECORDS_REPO
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="terminal-card rounded p-6 bg-slate-950 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-920/40 px-2 py-0.5 rounded font-mono font-bold uppercase">Endpoint Forensics</span>
-                            <span class="text-[10px] font-mono text-slate-500">sysmon_alert.json</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-200">Windows Event Log Investigation</h3>
-                        <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
-                            Securing Domain Controller hosts via Event logs. Track brute force intrusions (Event ID 4625), admin escalation logon sequences (4624), new process launch anomalies (Sysmon Event ID 1), and persistence schedules.
-                        </p>
-                    </div>
-                    <div class="flex justify-between items-center pt-5 border-t border-slate-900 mt-5">
-                        <span class="text-[10px] font-mono text-slate-500">Sysmon, PowerShell, Security logs</span>
-                        <a href="https://github.com/omar-boumezough/windows-event-forensics" target="_blank" class="text-xs font-mono text-cyan-400 inline-flex items-center gap-1 hover:underline">
-                            RECORDS_REPO
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="terminal-card rounded p-6 bg-slate-950 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-indigo-950 text-indigo-400 border border-indigo-920/45 px-2 py-0.5 rounded font-mono font-bold uppercase">Incident Handling</span>
-                            <span class="text-[10px] font-mono text-slate-500">playbook_sans.txt</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-200">Incident Response Report Templates</h3>
-                        <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
-                            Enterprise-level Incident Response playbooks tailored on SANS metrics. Includes dynamic guides for handling phishing alerts, active system privilege escalations, network scans, and ransomware isolation rules.
-                        </p>
-                    </div>
-                    <div class="flex justify-between items-center pt-5 border-t border-slate-900 mt-5">
-                        <span class="text-[10px] font-mono text-slate-500">IR Triage, SANS Templates, SOC</span>
-                        <a href="https://github.com/omar-boumezough/incident-response-templates" target="_blank" class="text-xs font-mono text-cyan-400 inline-flex items-center gap-1 hover:underline">
-                            RECORDS_REPO
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Project 4 -->
-                <div class="terminal-card rounded p-6 bg-slate-950 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] bg-purple-950 text-purple-400 border border-purple-920/45 px-2 py-0.5 rounded font-mono font-bold uppercase">Security Infrastructure</span>
-                            <span class="text-[10px] font-mono text-slate-500">lab_topo.xml</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-200">Blue Team Home Lab</h3>
-                        <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
-                            Virtualization lab designed with pfSense firewalls, multiple distinct segments, Active Directory domains, Wazuh SIEM telemetry collectors, routing rules, and isolated malware sandbox endpoints.
-                        </p>
-                    </div>
-                    <div class="flex justify-between items-center pt-5 border-t border-slate-900 mt-5">
-                        <span class="text-[10px] font-mono text-slate-500">pfSense, Wazuh, Active Directory</span>
-                        <a href="https://github.com/omar-boumezough/blue-team-homelab" target="_blank" class="text-xs font-mono text-cyan-400 inline-flex items-center gap-1 hover:underline">
-                            RECORDS_REPO
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+      <div class="cert-card reveal">
+        <span class="cert-icon-bg">🔐</span>
+        <div class="cert-issuer">Netriders — نت رايدرز</div>
+        <div class="cert-name">Security+ SY0-601</div>
+        <div class="cert-date">Issued Apr 2026</div>
+        <div class="cert-id">ID: #73b7188840c46a26</div>
+        <div class="cert-skills">
+          <span class="cert-skill-tag">Threat Assessment</span>
+          <span class="cert-skill-tag">Cryptography</span>
+          <span class="cert-skill-tag">Network Security</span>
+          <span class="cert-skill-tag">Governance</span>
         </div>
-    </section>
+        <a class="cert-link" href="https://netriders.academy/completion-certificate/?cert_hash=73b7188840c46a26" target="_blank" rel="noopener">
+          View Credential <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
 
-    <!-- SECTION: LEARNING GOALS -->
-    <section class="border-t border-slate-900 bg-slate-950/40 py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-bold font-mono text-cyan-400 mb-8 flex items-center gap-2">
-                <i data-lucide="chevron-right" class="w-5 h-5 animate-pulse"></i>
-                MILESTONES // GOALS & OBJECTIVES
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div class="space-y-4">
-                    <p class="text-slate-300 text-sm md:text-base leading-relaxed">
-                        I approach cybersecurity with a continuous improvement posture. My development goals bridge systems operations with deep-dive forensic diagnostics:
-                    </p>
-                    <div class="space-y-3 font-mono text-xs md:text-sm">
-                        <div class="flex items-start gap-2.5">
-                            <i data-lucide="check-square" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <p><span class="text-cyan-400 font-semibold">[Short Term]</span> Become a professional Incident Responder / SOC L2 Analyst</p>
-                        </div>
-                        <div class="flex items-start gap-2.5">
-                            <i data-lucide="check-square" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <p><span class="text-cyan-400 font-semibold">[Ongoing]</span> Deepen memory diagnostics & host artifact recovery</p>
-                        </div>
-                        <div class="flex items-start gap-2.5">
-                            <i data-lucide="check-square" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <p><span class="text-cyan-400 font-semibold">[Ongoing]</span> Write customized YARA/Sigma rules for enterprise SIEM tools</p>
-                        </div>
-                        <div class="flex items-start gap-2.5">
-                            <i data-lucide="check-square" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <p><span class="text-cyan-400 font-semibold">[Daily]</span> Solve forensic labs and compete in blue-team CTF environments</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-950 border border-slate-900 rounded p-6 font-mono text-xs text-slate-450 space-y-4">
-                    <p class="text-emerald-400 font-bold border-b border-slate-900 pb-1.5 flex items-center gap-2">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i>
-                        POSTURE REVISION METRIC
-                    </p>
-                    <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
-                        <div class="bg-slate-900/60 p-2.5 rounded border border-slate-900">
-                            <p class="text-[10px] text-slate-500 uppercase">Daily Practice</p>
-                            <span class="text-cyan-400 font-bold text-sm">365 / days</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-2.5 rounded border border-slate-900">
-                            <p class="text-[10px] text-slate-500 uppercase">Writeups</p>
-                            <span class="text-cyan-400 font-bold text-sm">Active</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-2.5 rounded border border-slate-900">
-                            <p class="text-[10px] text-slate-500 uppercase">Lab Posture</p>
-                            <span class="text-emerald-400 font-bold text-sm">HARDENED</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="section-label">Investigation Records</div>
+    <h2 class="section-title">Security <span>Projects</span></h2>
+    <div class="projects-grid">
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <span class="project-filename">pcap_triage.sh</span>
+          <span class="project-status">ACTIVE</span>
         </div>
-    </section>
-
-    <!-- SECTION: CONTACT CONSOLE -->
-    <section id="contact" class="border-t border-slate-900 py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-bold font-mono text-cyan-400 mb-8 flex items-center gap-2">
-                <i data-lucide="send" class="w-5 h-5"></i>
-                DISPATCH // SECURE COMMUNICATIONS CONSOLE
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
-                <div class="md:col-span-5 space-y-6">
-                    <p class="text-slate-400 text-sm md:text-base leading-relaxed">
-                        If you are looking to hire a SOC Analyst, recruit an Incident Responder, collaborate on a forensic task-force, or inquire about computer development actions, my door is always secure and open. Reach out via email, GitHub, or LinkedIn.
-                    </p>
-                    <div class="space-y-3 font-mono text-xs">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="mail" class="w-4 h-4 text-cyan-400"></i>
-                            <a href="mailto:omar0boumezough@gmail.com" class="text-slate-350 hover:text-cyan-400 transition-colors">omar0boumezough@gmail.com</a>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="github" class="w-4 h-4 text-slate-400"></i>
-                            <a href="https://github.com/omar-boumezough" target="_blank" class="text-slate-350 hover:text-cyan-400 transition-colors">GitHub/omar-boumezough</a>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="linkedin" class="w-4 h-4 text-cyan-400"></i>
-                            <a href="https://www.linkedin.com/in/omar-boumezough/" target="_blank" class="text-slate-350 hover:text-cyan-400 transition-colors">LinkedIn/Omar-Boumezough</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Contact submission -->
-                <div class="md:col-span-7 bg-slate-950 border border-slate-900 rounded p-6">
-                    <form id="static-contact-form" class="space-y-4 font-mono text-xs">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="space-y-1.5">
-                                <label class="text-slate-450 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Operator Identity (Name)</label>
-                                <input id="static-form-name" type="text" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 outline-none focus:border-cyan-500" placeholder="e.g. John Doe" required>
-                            </div>
-                            <div class="space-y-1.5">
-                                <label class="text-slate-450 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Return Routing IP/Email</label>
-                                <input id="static-form-email" type="email" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 outline-none focus:border-cyan-500" placeholder="e.g. operator@agency.gov" required>
-                            </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-slate-450 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Security Message Dispatch</label>
-                            <textarea id="static-form-message" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 outline-none focus:border-cyan-500" placeholder="State mission objective or general inquiry..." required></textarea>
-                        </div>
-                        <div class="flex justify-between items-center text-[10px] text-slate-500 pt-2">
-                            <span>* All dispatches are forwarded directly to Omar's mailbox</span>
-                            <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded font-bold tracking-wider transition-all border border-cyan-400 hover:scale-[1.02]">
-                                SEND_DISPATCH_//
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div class="project-title">Network Forensics — PCAP Analysis</div>
+        <div class="project-desc">Parsing complex packet captures to track and isolate backdoor downloads, malicious HTTP POST sequences, DNS exfiltration tunnels, and C2 beaconing timing offsets.</div>
+        <div class="project-tools">
+          <span class="project-tool">Wireshark</span>
+          <span class="project-tool">tshark</span>
+          <span class="project-tool">DNS Analysis</span>
+          <span class="project-tool">Bash</span>
         </div>
-    </section>
+        <a class="project-link" href="https://github.com/omar-boumezough" target="_blank" rel="noopener">
+          Records Repo <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-900 bg-slate-950 py-8 text-center text-slate-500 text-xs font-mono">
-        <div class="max-w-6xl mx-auto px-4 space-y-2">
-            <p>DFIR_SOC_PORTFOLIO v1.4.2 // © 2026. Omar Boumezough. All rights reserved.</p>
-            <p class="text-[10px]">Lycée Lalla Khadija • BTS DAI student workspace • Dakhla, Morocco 🇲🇦</p>
+      <div class="project-card reveal">
+        <div class="project-header">
+          <span class="project-filename">sysmon_alert.json</span>
+          <span class="project-status">ACTIVE</span>
         </div>
-    </footer>
+        <div class="project-title">Endpoint Forensics — Windows Event Log Investigation</div>
+        <div class="project-desc">Domain Controller security via Windows Event Logs. Tracking brute force (ID 4625), admin escalation (4624), new process anomalies (Sysmon ID 1), and persistence schedules.</div>
+        <div class="project-tools">
+          <span class="project-tool">Sysmon</span>
+          <span class="project-tool">PowerShell</span>
+          <span class="project-tool">Security Logs</span>
+          <span class="project-tool">Event Viewer</span>
+        </div>
+        <a class="project-link" href="https://github.com/omar-boumezough" target="_blank" rel="noopener">
+          Records Repo <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
 
-    <!-- INTERTACTIVE JAVASCRIPT CODES -->
-    <script>
-        // Init Lucide icons
-        lucide.createIcons();
+      <div class="project-card reveal">
+        <div class="project-header">
+          <span class="project-filename">playbook_sans.txt</span>
+          <span class="project-status">ACTIVE</span>
+        </div>
+        <div class="project-title">Incident Response Report Templates</div>
+        <div class="project-desc">Enterprise-level IR playbooks built on SANS/NIST frameworks. Dynamic guides for phishing alerts, privilege escalations, network scans, and ransomware isolation procedures.</div>
+        <div class="project-tools">
+          <span class="project-tool">IR Triage</span>
+          <span class="project-tool">SANS Templates</span>
+          <span class="project-tool">NIST Framework</span>
+          <span class="project-tool">SOC</span>
+        </div>
+        <a class="project-link" href="https://github.com/omar-boumezough" target="_blank" rel="noopener">
+          Records Repo <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
 
-        // Terminal Interactive scripts
-        const terminalHistory = document.getElementById('static-terminal-history');
-        const terminalInput = document.getElementById('static-terminal-input');
+      <div class="project-card reveal">
+        <div class="project-header">
+          <span class="project-filename">lab_topo.xml</span>
+          <span class="project-status">ONGOING</span>
+        </div>
+        <div class="project-title">Blue Team Home Lab Infrastructure</div>
+        <div class="project-desc">Virtualization lab with pfSense firewalls, network segmentation, Active Directory domains, Wazuh SIEM telemetry collectors, routing rules, and isolated malware sandbox endpoints.</div>
+        <div class="project-tools">
+          <span class="project-tool">pfSense</span>
+          <span class="project-tool">Wazuh SIEM</span>
+          <span class="project-tool">Active Directory</span>
+          <span class="project-tool">VMware</span>
+          <span class="project-tool">VirtualBox</span>
+        </div>
+        <a class="project-link" href="https://github.com/omar-boumezough" target="_blank" rel="noopener">
+          Records Repo <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
 
-        const commands = {
-            help: `=== LEGAL DIRECTIVES AVAILABLE: ===
-- <span class="text-cyan-400">neofetch</span>: Print academic stats & system data
-- <span class="text-cyan-400">about</span>: Background statement & goals
-- <span class="text-cyan-400">skills</span>: Cybersecurity checklist
-- <span class="text-cyan-400">certs</span>: Netriders validation details
-- <span class="text-cyan-450 text-cyan-400">projects</span>: Active incident analysis reports`,
-            neofetch: `<p class="text-cyan-400 font-semibold mb-1">omar@dfir-soc-terminal</p>
-OS: Cyber Linux MA (BTS DAI Edition)
-Age: 18 years old
-City: Dakhla, Morocco 🇲🇦
-School: Lycée Lalla Khadija
-Program: BTS DAI (Software development)
-Certs: eCIR, CompTIA Sec+ (via Netriders Academy)`,
-            about: "I am an 18-year-old developer studying at Lycée Lalla Khadija in Dakhla. Extremely focused on incident triage, Wireshark frame analysis, host threat containment, and SANS security procedures.",
-            skills: `• SOC Triage & IR (SANS Framework)
-• Wireshark & PCAP decoding 
-• Sysmon logs & Windows event logs
-• Sigma Basics / YARA signatures
-• C, Python, JavaScript, Bash, SQL`,
-            certs: `1. eCIR (eLearnSecurity Certified Incident Responder) - Netriders Academy
-2. CompTIA Security+ SY0-601 - Netriders Academy`,
-            projects: `• Wireshark PCAP Analysis (Network Threat hunting)
-• Windows Event Log Investigation (Adversary lateral tracing)
-• SANS Incident Response playbooks
-• Virtualized security lab (pfSense & Wazuh SIEM)`
-        };
+    </div>
+  </div>
+</section>
 
-        terminalInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const value = terminalInput.value.trim().toLowerCase();
-                if (!value) return;
+<div class="section-divider"></div>
 
-                // Echo the input
-                const userLine = document.createElement('div');
-                userLine.className = 'text-green-400 pt-2';
-                userLine.innerHTML = `omar@dfir:~$ ${terminalInput.value}`;
-                terminalHistory.appendChild(userLine);
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-wrap">
+    <div class="section-label">Academic Path</div>
+    <h2 class="section-title">Education</h2>
+    <div class="edu-card reveal">
+      <div class="edu-degree">Brevet de Technicien Supérieur (BTS)</div>
+      <div class="edu-school">Lycée Lalla Khadija — BTS DAI (Développement d'Applications Informatiques)</div>
+      <div class="edu-period">Sep 2025 — Apr 2027 · Dakhla, Morocco</div>
+      <span class="edu-grade">Première Année · Bac +2</span>
+    </div>
+  </div>
+</section>
 
-                // Analyze command
-                const responseLine = document.createElement('div');
-                responseLine.className = 'pl-2 border-l border-slate-900 pb-2 text-slate-350';
-                
-                if (value === 'clear') {
-                    terminalHistory.innerHTML = '';
-                } else if (commands[value]) {
-                    responseLine.innerHTML = commands[value].replace(/\n/g, '<br>');
-                    terminalHistory.appendChild(responseLine);
-                } else {
-                    responseLine.className = 'text-red-400 pl-2 border-l border-slate-900 pb-2';
-                    responseLine.innerHTML = `Unknown instruction: "${value}". Type '<span class="text-yellow-400 font-bold">help</span>' for valid directives.`;
-                    terminalHistory.appendChild(responseLine);
-                }
+<div class="section-divider"></div>
 
-                terminalInput.value = '';
-                terminalHistory.scrollTop = terminalHistory.scrollHeight;
-            }
-        });
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="section-label">Reach Out</div>
+    <h2 class="section-title">Get in <span>Touch</span></h2>
+    <div class="contact-inner">
+      <div class="contact-info reveal">
+        <p>Want to collaborate on blue team research, discuss DFIR techniques, or just connect? Reach out through any channel below.</p>
+        <div class="contact-links">
+          <a href="mailto:omar0boumezough@gmail.com" class="contact-link">
+            <div class="contact-link-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <div class="contact-link-text"><span class="contact-link-label">Email</span><span class="contact-link-val">omar0boumezough@gmail.com</span></div>
+          </a>
+          <a href="https://linkedin.com/in/omar-boumezough" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon"><svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg></div>
+            <div class="contact-link-text"><span class="contact-link-label">LinkedIn</span><span class="contact-link-val">omar-boumezough</span></div>
+          </a>
+          <a href="https://github.com/omar-boumezough" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon"><svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg></div>
+            <div class="contact-link-text"><span class="contact-link-label">GitHub</span><span class="contact-link-val">omar-boumezough</span></div>
+          </a>
+        </div>
+      </div>
+      <div class="contact-form reveal">
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" placeholder="Your name" id="form-name"/></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="your@email.com" id="form-email"/></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="What's on your mind?" id="form-msg"></textarea></div>
+        <button class="btn-primary" style="width:100%;cursor:pointer" onclick="sendMessage()">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Contact email dispatch redirect
-        document.getElementById('static-contact-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const nameHandler = document.getElementById('static-form-name');
-            const emailHandler = document.getElementById('static-form-email');
-            const messageHandler = document.getElementById('static-form-message');
+<footer>
+  <p>© 2026 <span>Omar Boumezough</span> — BTS DAI · Blue Team Defender · DFIR Learner · Dakhla, Morocco</p>
+</footer>
 
-            const name = nameHandler.value;
-            const email = emailHandler.value;
-            const message = messageHandler.value;
+<div id="notification"></div>
 
-            const mailtoLink = `mailto:omar0boumezough@gmail.com?subject=Cybersecurity Inquiry from ${encodeURIComponent(name)}&body=Sender: ${encodeURIComponent(email)}%0A%0AMessage:%0A${encodeURIComponent(message)}`;
-            const mailtoLinkLink = document.createElement('a');
-            mailtoLinkLink.href = mailtoLink;
-            mailtoLinkLink.target = '_blank';
-            document.body.appendChild(mailtoLinkLink);
-            mailtoLinkLink.click();
-            document.body.removeChild(mailtoLinkLink);
+<script>
+// ── cursor ──
+const cursor=document.getElementById('cursor'),cursorDot=document.getElementById('cursor-dot');
+document.addEventListener('mousemove',e=>{
+  cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';
+  cursorDot.style.left=e.clientX+'px';cursorDot.style.top=e.clientY+'px';
+});
+document.querySelectorAll('a,button,.cert-card,.project-card,.skill-category,.stat-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.style.transform='translate(-50%,-50%) scale(1.8)');
+  el.addEventListener('mouseleave',()=>cursor.style.transform='translate(-50%,-50%) scale(1)');
+});
 
-            // Log interactive dispatch message inside the simulated terminal
-            const statusLine = document.createElement('div');
-            statusLine.className = 'text-green-400 pl-2 border-l border-green-800 pb-2 pt-2';
-            statusLine.innerHTML = `[OK] SECURE DISPATCH COMPLETED!<br>Opening mail draft for omar0boumezough@gmail.com...`;
-            terminalHistory.appendChild(statusLine);
-            terminalHistory.scrollTop = terminalHistory.scrollHeight;
+// ── particles ──
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+class Particle{
+  constructor(){this.reset();}
+  reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.size=Math.random()*1.4+0.4;this.speedX=(Math.random()-.5)*.28;this.speedY=(Math.random()-.5)*.28;this.opacity=Math.random()*.38+.04;}
+  update(){this.x+=this.speedX;this.y+=this.speedY;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
+  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(0,229,255,${this.opacity})`;ctx.fill();}
+}
+for(let i=0;i<80;i++)particles.push(new Particle());
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw();});
+  for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+    const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<100){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(26,145,240,${.08*(1-d/100)})`;ctx.lineWidth=.5;ctx.stroke();}
+  }
+  requestAnimationFrame(animate);
+}
+animate();
 
-            // Clear forms
-            nameHandler.value = '';
-            emailHandler.value = '';
-            messageHandler.value = '';
-        });
-    </script>
+// ── typed role ──
+const roles=['Incident Responder','Blue Team Analyst','SOC Operator','DFIR Learner','BTS DAI Student','Wireshark Investigator'];
+let ri=0,ci=0,deleting=false;
+const typedEl=document.getElementById('typed-role');
+function typeRole(){
+  const word=roles[ri];
+  if(!deleting){typedEl.textContent=word.slice(0,++ci);if(ci===word.length){deleting=true;setTimeout(typeRole,1900);return;}}
+  else{typedEl.textContent=word.slice(0,--ci);if(ci===0){deleting=false;ri=(ri+1)%roles.length;}}
+  setTimeout(typeRole,deleting?50:80);
+}
+setTimeout(typeRole,1100);
+
+// ── terminal ──
+const tlines=[
+  {cls:'t-prompt t-cmd',text:'=== MOROCCAN SOC FORENSIC LAB - CORE v1.0 ==='},
+  {cls:'t-out t-warn',text:'Security analyst initialized.'},
+  {cls:'t-prompt t-cmd',text:'$ cat profile_data.json'},
+  {cls:'t-out',html:'{'},
+  {cls:'t-out',html:'  <span class="t-key">"name"</span>: <span class="t-val">"Omar Boumezough"</span>,'},
+  {cls:'t-out',html:'  <span class="t-key">"city"</span>: <span class="t-val">"Dakhla, Morocco"</span>,'},
+  {cls:'t-out',html:'  <span class="t-key">"focus"</span>: <span class="t-val">["DFIR","SOC","Blue Team"]</span>,'},
+  {cls:'t-out',html:'  <span class="t-key">"certs"</span>: <span class="t-val">3</span>,'},
+  {cls:'t-out',html:'  <span class="t-key">"labs"</span>: <span class="t-val">4</span>'},
+  {cls:'t-out',html:'}'},
+  {cls:'t-prompt t-cmd',text:'$ ping -c1 blue.team.ops'},
+  {cls:'t-out',html:'<span class="t-val">64 bytes: icmp_seq=1 ttl=64 time=1.2ms ✓</span>'},
+];
+const tbody=document.getElementById('terminal-body');
+tlines.forEach(l=>{const d=document.createElement('div');d.className='t-line '+l.cls;if(l.html)d.innerHTML=l.html;else d.textContent=l.text;tbody.appendChild(d);});
+let ti=0;
+function showTLine(){const els=tbody.querySelectorAll('.t-line');if(ti<els.length){els[ti].classList.add('visible');ti++;setTimeout(showTLine,190);}}
+setTimeout(showTLine,1100);
+
+// ── skills matrix ──
+const skillCategories=[
+  {
+    title:'Incident Response & SOC',icon:'🔍',
+    skills:[
+      {name:'SOC Alert Triage',pct:85},{name:'Incident Response',pct:80},
+      {name:'Digital Forensics',pct:75},{name:'Windows Event Logs',pct:85},
+      {name:'Sysmon & Wireshark',pct:85},
+    ],
+    tags:['MITRE ATT&CK','Sigma / YARA','Packet Header Audit','Memory Dumps']
+  },
+  {
+    title:'Systems & Code (BTS DAI)',icon:'💻',
+    skills:[
+      {name:'HTML / CSS / JS',pct:85},{name:'Linux CLI & Bash',pct:80},
+      {name:'Python Scripting',pct:75},{name:'SQL & Databases',pct:75},
+      {name:'C Programming',pct:70},
+    ],
+    tags:['JSON Log Parsers','C# Development','Query Building']
+  },
+  {
+    title:'Infrastructure & Core',icon:'🌐',
+    skills:[
+      {name:'Networking Essentials',pct:85},{name:'TCP/IP · DNS · TLS',pct:85},
+      {name:'Virtualization & VMs',pct:85},{name:'Computer Architecture',pct:75},
+    ],
+    tags:['pfSense NAT','VMware / VirtualBox','Active Directory','Wazuh SIEM']
+  },
+];
+const sm=document.getElementById('skills-matrix');
+skillCategories.forEach(cat=>{
+  const div=document.createElement('div');
+  div.className='skill-category reveal';
+  let skillsHTML=cat.skills.map(s=>`
+    <div class="skill-item">
+      <div class="skill-top"><span class="skill-name">${s.name}</span><span class="skill-pct">${s.pct}%</span></div>
+      <div class="skill-bar"><div class="skill-fill" data-pct="${s.pct}"></div></div>
+    </div>`).join('');
+  let tagsHTML=cat.tags.map(t=>`<span class="skill-tag">${t}</span>`).join('');
+  div.innerHTML=`<div class="skill-cat-title"><span class="cat-icon">${cat.icon}</span>${cat.title}</div>${skillsHTML}<div class="skill-tags">${tagsHTML}</div>`;
+  sm.appendChild(div);
+});
+
+// ── scroll reveal ──
+const revealEls=document.querySelectorAll('.reveal');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      e.target.querySelectorAll('.skill-fill').forEach(b=>b.style.width=b.dataset.pct+'%');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.13});
+revealEls.forEach(el=>io.observe(el));
+
+// ── contact form ──
+function sendMessage(){
+  const n=document.getElementById('form-name').value.trim();
+  const em=document.getElementById('form-email').value.trim();
+  const m=document.getElementById('form-msg').value.trim();
+  if(!n||!em||!m){showNotification('⚠ Please fill in all fields.');return;}
+  showNotification('✓ Message transmitted successfully!');
+  ['form-name','form-email','form-msg'].forEach(id=>document.getElementById(id).value='');
+}
+function showNotification(text){
+  const n=document.getElementById('notification');
+  n.textContent=text;n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),3500);
+}
+</script>
 </body>
 </html>
